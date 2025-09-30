@@ -16,7 +16,7 @@ export default function HomePage() {
 
           <div className="space-y-4">
             <p className="max-w-xl text-base leading-relaxed text-foreground">
-              A historical archive of @siddhartharun's analog photography. Mostly taken on a Leica M6, favouring 50mm —
+              A historical archive of @parkerxhollis's analog photography. Mostly taken on a Contax T2, favouring 50mm —
               occasionally venturing into 35mm / 28mm focal lengths.
             </p>
 
