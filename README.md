@@ -17,45 +17,49 @@ A minimal, elegant web application for archiving and showcasing analog film phot
 
 - **Framework**: [Next.js 14](https://nextjs.org/) with App Router
 - **Language**: TypeScript
-- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
-- **UI Components**: [Radix UI](https://www.radix-ui.com/)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) with PostCSS
+- **UI Components**: [Radix UI](https://www.radix-ui.com/) primitives
 - **Icons**: [Lucide React](https://lucide.dev/)
 - **Fonts**: [Geist Sans & Geist Mono](https://vercel.com/font)
+- **Package Manager**: pnpm (recommended)
+- **Analytics**: [Vercel Analytics](https://vercel.com/analytics)
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js 18+ installed
-- npm, yarn, or pnpm package manager
+- pnpm package manager (recommended) or npm/yarn
 
 ### Installation
 
 1. Clone or download this repository:
-\`\`\`bash
+```bash
 git clone <your-repo-url>
 cd film-archive
-\`\`\`
+```
 
 2. Install dependencies:
-\`\`\`bash
+```bash
+pnpm install
+# or
 npm install
 # or
 yarn install
-# or
-pnpm install
-\`\`\`
+```
 
 3. Run the development server:
-\`\`\`bash
+```bash
+pnpm dev
+# or
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-\`\`\`
+```
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+> **Note**: The app comes with sample film roll data. You can replace this with your own photos and data as described in the "Adding Your Own Film Rolls" section below.
 
 ## Adding Your Own Film Rolls
 
@@ -65,34 +69,32 @@ All film roll data is stored in `lib/data.ts`. To add your own rolls:
 
 2. **Edit `lib/data.ts`** and add your roll data:
 
-\`\`\`typescript
+```typescript
 {
   id: "1",
+  number: 1,
   name: "Kodak Tri-X 400",
   camera: "Leica M6",
   stock: "Kodak Tri-X 400",
-  format: "135",
+  format: 135,
   frames: 36,
   publishedDate: "2025-01-15",
   thumbnail: "/your-thumbnail.jpg",
+  keepers: 28,
+  lens: "Summicron 50mm f/2",
   photos: [
-    { id: 1, url: "/your-photo-1.jpg" },
-    { id: 2, url: "/your-photo-2.jpg" },
+    { id: "1", number: 1, url: "/your-photo-1.jpg" },
+    { id: "2", number: 2, url: "/your-photo-2.jpg" },
     // ... more photos
-  ],
-  metadata: {
-    lens: "Summicron 50mm f/2",
-    iso: "400",
-    keepers: 28
-  }
+  ]
 }
-\`\`\`
+```
 
 3. **Update the archive description** in `app/page.tsx` to personalize the homepage text
 
 ## Project Structure
 
-\`\`\`
+```
 film-archive/
 ├── app/
 │   ├── layout.tsx          # Root layout with fonts
@@ -104,11 +106,28 @@ film-archive/
 │           └── page.tsx    # Individual roll detail page
 ├── components/
 │   ├── camera-icon.tsx     # Camera logo icon
-│   └── photo-lightbox.tsx  # Photo viewer modal
+│   ├── photo-lightbox.tsx  # Photo viewer modal
+│   ├── theme-provider.tsx  # Theme context provider
+│   └── ui/                 # Reusable UI components
+│       ├── button.tsx
+│       ├── card.tsx
+│       ├── dialog.tsx
+│       └── ...             # Other Radix UI components
+├── hooks/
+│   ├── use-mobile.ts       # Mobile detection hook
+│   └── use-toast.ts        # Toast notification hook
 ├── lib/
-│   └── data.ts             # Film roll data
-└── public/                 # Static assets (photos)
-\`\`\`
+│   ├── data.ts             # Film roll data
+│   └── utils.ts            # Utility functions
+├── public/                 # Static assets (photos)
+├── styles/
+│   └── globals.css         # Additional global styles
+├── components.json         # UI components configuration
+├── next.config.mjs         # Next.js configuration
+├── postcss.config.mjs      # PostCSS configuration
+├── tailwind.config.js      # Tailwind CSS configuration
+└── tsconfig.json           # TypeScript configuration
+```
 
 ## Deployment
 
@@ -122,10 +141,10 @@ The easiest way to deploy is using [Vercel](https://vercel.com):
 4. Vercel will auto-detect Next.js and deploy
 
 Or use the Vercel CLI:
-\`\`\`bash
-npm i -g vercel
+```bash
+pnpm i -g vercel
 vercel
-\`\`\`
+```
 
 ### Deploy to Other Platforms
 
@@ -133,7 +152,7 @@ This is a standard Next.js app and can be deployed to any platform that supports
 
 - **Netlify**: Use the [Next.js plugin](https://docs.netlify.com/integrations/frameworks/next-js/)
 - **Railway**: Connect your GitHub repo and deploy
-- **Self-hosted**: Build with `npm run build` and run with `npm start`
+- **Self-hosted**: Build with `pnpm build` and run with `pnpm start`
 
 ## Customization
 
@@ -141,13 +160,13 @@ This is a standard Next.js app and can be deployed to any platform that supports
 
 Edit `app/globals.css` to customize the color scheme. The theme uses CSS variables:
 
-\`\`\`css
+```css
 @theme inline {
   --color-background: #f5f5f5;
   --color-foreground: #1a1a1a;
   /* ... more variables */
 }
-\`\`\`
+```
 
 ### Typography
 
@@ -160,13 +179,13 @@ Fonts are configured in `app/layout.tsx`. To use different fonts:
 
 The photo grid layout can be adjusted in `app/rolls/[id]/page.tsx` by modifying the grid classes:
 
-\`\`\`tsx
+```tsx
 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-\`\`\`
+```
 
 ## License
 
-This project is open source and available under the [MIT License](LICENSE).
+This project is open source and available under the [MIT License](https://opensource.org/licenses/MIT).
 
 ## Acknowledgments
 
@@ -177,6 +196,23 @@ This project is open source and available under the [MIT License](LICENSE).
 ## Contributing
 
 Feel free to open issues or submit pull requests if you have suggestions for improvements!
+
+### Development
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Make your changes and test them locally
+4. Commit your changes: `git commit -m 'Add amazing feature'`
+5. Push to the branch: `git push origin feature/amazing-feature`
+6. Open a Pull Request
+
+## Troubleshooting
+
+### Common Issues
+
+- **Build errors**: Make sure you're using Node.js 18+ and have installed dependencies with `pnpm install`
+- **Images not loading**: Ensure your photos are in the `public` folder and paths in `data.ts` start with `/`
+- **TypeScript errors**: Run `pnpm build` to check for type errors before deploying
 
 ---
 
