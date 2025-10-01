@@ -59,38 +59,108 @@ yarn dev
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-> **Note**: The app comes with sample film roll data. You can replace this with your own photos and data as described in the "Adding Your Own Film Rolls" section below.
+> **Note**: The app comes with sample film rolls in `/public/rolls/`. You can add your own rolls by following the instructions in the "Adding Your Own Film Rolls" section below.
 
 ## Adding Your Own Film Rolls
 
-All film roll data is stored in `lib/data.ts`. To add your own rolls:
+The film archive now uses a directory-based system for managing rolls. No code editing required!
 
-1. **Add your photos** to the `public` folder (organized however you like)
+### Directory Structure
 
-2. **Edit `lib/data.ts`** and add your roll data:
+All film rolls are stored in `/public/rolls/` with the following structure:
 
-```typescript
-{
-  id: "1",
-  number: 1,
-  name: "Kodak Tri-X 400",
-  camera: "Leica M6",
-  stock: "Kodak Tri-X 400",
-  format: 135,
-  frames: 36,
-  publishedDate: "2025-01-15",
-  thumbnail: "/your-thumbnail.jpg",
-  keepers: 28,
-  lens: "Summicron 50mm f/2",
-  photos: [
-    { id: "1", number: 1, url: "/your-photo-1.jpg" },
-    { id: "2", number: 2, url: "/your-photo-2.jpg" },
-    // ... more photos
-  ]
-}
+```
+public/rolls/
+├── roll-001/
+│   ├── 01.jpg
+│   ├── 02.jpg
+│   ├── 03.jpg
+│   └── metadata.md
+├── roll-002/
+│   ├── 01.jpg
+│   ├── 02.jpg
+│   └── metadata.md
+└── ...
 ```
 
-3. **Update the archive description** in `app/page.tsx` to personalize the homepage text
+### Adding a New Roll
+
+1. **Create a new folder** in `/public/rolls/` with the naming convention `roll-XXX` (e.g., `roll-005`)
+
+2. **Add your images** to the folder, naming them sequentially:
+   - `01.jpg`, `02.jpg`, `03.jpg`, etc.
+   - Supported formats: `.jpg`, `.jpeg`, `.png`, `.webp`
+
+3. **Create a `metadata.md` file** with the following structure:
+
+```markdown
+# Roll XXX - Film Stock Name
+
+## Camera
+Camera Model
+
+## Location
+City, State/Country
+
+## Date
+YYYY-MM-DD
+
+## Film Stock
+Film Stock Name
+
+## ISO
+ISO Speed
+
+## Film Format
+120 or 135
+
+## Note
+Any additional notes about the roll, shooting conditions, or thoughts.
+```
+
+4. **Update the archive description** in `app/page.tsx` to personalize the homepage text
+
+### Example Roll
+
+Here's a complete example for `roll-005`:
+
+**Folder**: `/public/rolls/roll-005/`
+- `01.jpg` - First photo
+- `02.jpg` - Second photo  
+- `03.jpg` - Third photo
+- `metadata.md` - Roll information
+
+**metadata.md content**:
+```markdown
+# Roll 005 - Kodak Portra 400
+
+## Camera
+Leica M6
+
+## Location
+Tokyo, Japan
+
+## Date
+2025-01-20
+
+## Film Stock
+Kodak Portra 400
+
+## ISO
+400
+
+## Film Format
+135
+
+## Note
+Street photography in Shibuya during golden hour. The Portra 400 handled the mixed lighting beautifully.
+```
+
+The system will automatically:
+- Sort images numerically by filename
+- Generate photo URLs for the web interface
+- Extract metadata for display
+- Calculate frame counts and other statistics
 
 ## Project Structure
 
@@ -117,9 +187,14 @@ film-archive/
 │   ├── use-mobile.ts       # Mobile detection hook
 │   └── use-toast.ts        # Toast notification hook
 ├── lib/
-│   ├── data.ts             # Film roll data
+│   ├── data.ts             # Film roll data interface
+│   ├── roll-parser.ts      # Directory-based roll parser
 │   └── utils.ts            # Utility functions
-├── public/                 # Static assets (photos)
+├── public/                 # Static assets
+│   └── rolls/              # Film roll directories
+│       ├── roll-001/       # Individual roll folders
+│       ├── roll-002/
+│       └── ...
 ├── styles/
 │   └── globals.css         # Additional global styles
 ├── components.json         # UI components configuration
@@ -211,7 +286,9 @@ Feel free to open issues or submit pull requests if you have suggestions for imp
 ### Common Issues
 
 - **Build errors**: Make sure you're using Node.js 18+ and have installed dependencies with `pnpm install`
-- **Images not loading**: Ensure your photos are in the `public` folder and paths in `data.ts` start with `/`
+- **Images not loading**: Ensure your photos are in the correct `/public/rolls/roll-XXX/` folder with proper naming (01.jpg, 02.jpg, etc.)
+- **Roll not appearing**: Check that your roll folder has a `metadata.md` file with all required fields
+- **Metadata not displaying**: Verify your `metadata.md` file follows the exact format with `## Field Name` headers
 - **TypeScript errors**: Run `pnpm build` to check for type errors before deploying
 
 ---
