@@ -1,42 +1,11 @@
 import Link from "next/link"
 import Image from "next/image"
 import { CameraIcon } from "@/components/camera-icon"
-import { FilmRoll } from "@/lib/data"
+import { filmRolls, getTotalFrames, getLatestPublishDate } from "@/lib/data"
 
-// Force dynamic rendering
-export const dynamic = 'force-dynamic'
-
-async function getRolls(): Promise<FilmRoll[]> {
-  try {
-    // Use relative URL for internal API calls
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/rolls`, {
-      cache: 'no-store'
-    })
-    if (!response.ok) {
-      throw new Error('Failed to fetch rolls')
-    }
-    return await response.json()
-  } catch (error) {
-    console.error('Error fetching rolls:', error)
-    return []
-  }
-}
-
-function getTotalFrames(rolls: FilmRoll[]): number {
-  return rolls.reduce((total, roll) => total + roll.frames, 0)
-}
-
-function getLatestPublishDate(rolls: FilmRoll[]): string {
-  if (rolls.length === 0) return 'Never'
-  const dates = rolls.map((roll) => new Date(roll.publishedDate))
-  const latest = new Date(Math.max(...dates.map((d) => d.getTime())))
-  return latest.toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })
-}
-
-export default async function HomePage() {
-  const filmRolls = await getRolls()
-  const totalFrames = getTotalFrames(filmRolls)
-  const latestDate = getLatestPublishDate(filmRolls)
+export default function HomePage() {
+  const totalFrames = getTotalFrames()
+  const latestDate = getLatestPublishDate()
 
   return (
     <div className="min-h-screen bg-background">
